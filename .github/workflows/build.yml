@@ -1,4 +1,4 @@
-name: Build Windows EXE
+name: Build Multi-OS
 
 on:
   push:
@@ -6,29 +6,72 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  # JOB 1: WINDOWS (DEJA TESTAT)
+  build-windows:
     runs-on: windows-latest
-
     steps:
-    - uses: actions/checkout@v3
-
+    - uses: actions/checkout@v4
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.10' # Versiune stabilă
-
+        python-version: '3.10'
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-
-    - name: Build with PyInstaller
+    - name: Build EXE
       run: |
-        # Comanda magica care include tot
         pyinstaller --noconsole --onefile --icon=logo.ico --name="ManuX_Wealth_OS" --collect-all customtkinter --hidden-import=yfinance --hidden-import=pandas --hidden-import=PIL --hidden-import=reportlab ManuX_Wealth_OS.py
-
-    - name: Upload Artifact
+    - name: Upload Windows Artifact
       uses: actions/upload-artifact@v4
       with:
         name: ManuX_Wealth_OS_Windows
         path: dist/ManuX_Wealth_OS.exe
+
+    # JOB 2: MACOS (DMG PROFESIONAL)
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        # Instalăm utilitarul pentru DMG
+        brew install create-dmg
+        
+    - name: Build App Bundle
+      run: |
+        # Creăm .app
+        pyinstaller --windowed --noconsole --name="ManuX_Wealth_OS" --collect-all customtkinter --hidden-import=yfinance --hidden-import=pandas --hidden-import=PIL --hidden-import=reportlab ManuX_Wealth_OS.py
+
+    - name: Create DMG Installer
+      run: |
+        # Creăm folderul pentru DMG
+        mkdir -p dist/dmg
+        # Mutăm aplicația acolo
+        mv dist/ManuX_Wealth_OS.app dist/dmg/
+        
+        # Generăm DMG-ul cu drag-and-drop automat
+        create-dmg \
+          --volname "ManuX Wealth OS Installer" \
+          --window-pos 200 120 \
+          --window-size 800 400 \
+          --icon-size 100 \
+          --icon "ManuX_Wealth_OS.app" 200 190 \
+          --hide-extension "ManuX_Wealth_OS.app" \
+          --app-drop-link 600 185 \
+          "dist/ManuX_Wealth_OS.dmg" \
+          "dist/dmg/"
+
+    - name: Upload Mac DMG
+      uses: actions/upload-artifact@v4
+      with:
+        name: ManuX_Wealth_OS_Mac_DMG
+        path: dist/ManuX_Wealth_OS.dmg
