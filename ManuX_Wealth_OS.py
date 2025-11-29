@@ -17,6 +17,11 @@ import random
 from datetime import datetime
 from math import pow, sqrt
 
+# FIX PENTRU EROAREA 'NoneType object has no attribute flush'
+if sys.stdout is None:
+    sys.stdout = open(os.devnull, "w")
+if sys.stderr is None:
+    sys.stderr = open(os.devnull, "w")
 # -----------------------------------------------------------------------------
 # 1. CONFIGURĂRI
 # -----------------------------------------------------------------------------
@@ -836,4 +841,5 @@ TAXE SI COSTURI
 
 if __name__ == "__main__":
     app = App()
+
     app.mainloop()
