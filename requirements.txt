@@ -1,0 +1,10 @@
+customtkinter
+packaging
+yfinance
+matplotlib
+openpyxl
+reportlab
+pillow
+requests
+pandas
+pyinstaller
