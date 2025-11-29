@@ -28,7 +28,7 @@ jobs:
         pyinstaller --noconsole --onefile --icon=logo.ico --name="ManuX_Wealth_OS" --collect-all customtkinter --hidden-import=yfinance --hidden-import=pandas --hidden-import=PIL --hidden-import=reportlab ManuX_Wealth_OS.py
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ManuX_Wealth_OS_Windows
         path: dist/ManuX_Wealth_OS.exe
