@@ -17,7 +17,7 @@ from math import pow, sqrt
 import random
 
 APP_TITLE = "ManuX Wealth OS"
-VERSION = "18.1 Portfolio Fix"
+VERSION = "16.1 Enterprise"
 COLORS = {"bg": "#0f172a", "panel": "#1e293b", "card": "#334155", "accent": "#3b82f6", "success": "#10b981", "danger": "#ef4444", "warning": "#f59e0b", "text": "#f8fafc", "text_dim": "#94a3b8", "info_bg": "#1e293b"}
 CURRENCIES = {"EUR": "€", "USD": "$", "CAD": "C$", "RON": "lei", "GBP": "£", "CHF": "CHF"}
 MONTHS = ["Ian", "Feb", "Mar", "Apr", "Mai", "Iun", "Iul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -688,3 +688,4 @@ class App(ctk.CTk):
 if __name__ == "__main__":
     app = App()
     app.mainloop()
+
