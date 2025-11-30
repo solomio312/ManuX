@@ -21,7 +21,7 @@ jobs:
         pip install -r requirements.txt
     - name: Build EXE
       run: |
-        pyinstaller --noconsole --onefile --icon=logo.ico --name="ManuX_Wealth_OS" --collect-all customtkinter --hidden-import=yfinance --hidden-import=pandas --hidden-import=PIL --hidden-import=reportlab ManuX_Wealth_OS.py
+        pyinstaller --noconsole --onefile --icon=logo.ico --name="ManuX_Wealth_OS" --collect-all customtkinter --hidden-import=yfinance --hidden-import=pandas --hidden-import=PIL --hidden-import=reportlab --hidden-import=matplotlib ManuX_Wealth_OS.py
     - name: Upload Windows Artifact
       uses: actions/upload-artifact@v4
       with:
@@ -46,10 +46,9 @@ jobs:
         # Instalăm utilitarul pentru DMG
         brew install create-dmg
         
-    - name: Build App Bundle
+        - name: Build App Bundle
       run: |
-        # Creăm .app
-        pyinstaller --windowed --noconsole --name="ManuX_Wealth_OS" --collect-all customtkinter --hidden-import=yfinance --hidden-import=pandas --hidden-import=PIL --hidden-import=reportlab ManuX_Wealth_OS.py
+        pyinstaller --windowed --noconsole --name="ManuX_Wealth_OS" --collect-all customtkinter --hidden-import=yfinance --hidden-import=pandas --hidden-import=PIL --hidden-import=reportlab --hidden-import=matplotlib ManuX_Wealth_OS.py
 
     - name: Create DMG Installer
       run: |
