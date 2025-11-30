@@ -1,10 +1,10 @@
 customtkinter
 packaging
 yfinance
+pandas
 matplotlib
 openpyxl
 reportlab
 pillow
 requests
-pandas
 pyinstaller
