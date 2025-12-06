@@ -5,7 +5,7 @@ workflows:
     instance_type: mac_mini_m1
     
     environment:
-      python: 3.10
+
       groups:
         - keystore_credentials  # Optional - pentru signed APK
       vars:
