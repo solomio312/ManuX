@@ -14,6 +14,7 @@ android.minapi = 26
 android.ndk = 25b
 android.accept_sdk_license = True
 android.arch = arm64-v8a
+p4a.branch = master
 
 # Icon and presplash
 icon.filename = assets/logo.png
