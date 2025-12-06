@@ -6,7 +6,8 @@ __pycache__/
 # Distribution / packaging
 build/
 dist/
-*.spec
+# *.spec - excluded but not buildozer.spec
+!android/buildozer.spec
 *.egg-info/
 
 # Virtual environments
