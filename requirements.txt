@@ -1,10 +1,3 @@
-customtkinter
-packaging
-yfinance
-pandas
-matplotlib
-openpyxl
-reportlab
-pillow
-requests
-pyinstaller
+customtkinter>=5.2.0
+Pillow>=10.0.0
+reportlab>=4.0.0

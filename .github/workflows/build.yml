@@ -1,81 +1,116 @@
-name: Build ManuX OS
+name: Build Executables
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ main, master ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
-  # ------------------------------------------------------------------
-  # JOB 1: WINDOWS
-  # ------------------------------------------------------------------
   build-windows:
     runs-on: windows-latest
-    
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-        
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        
-    - name: Build EXE (Windows)
-      run: |
-        pyinstaller --noconsole --onefile --icon=logo.ico --name="ManuX_Wealth_OS" --collect-all customtkinter --hidden-import=yfinance --hidden-import=pandas --hidden-import=matplotlib --hidden-import=PIL --hidden-import=reportlab ManuX_Wealth_OS.py
-        
-    - name: Upload Windows Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: ManuX_Wealth_OS_Windows
-        path: dist/ManuX_Wealth_OS.exe
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+          
+      - name: Build Windows executable
+        run: |
+          pyinstaller --onefile --windowed --name "ManuX-Wealth-OS" --add-data "logo.png;." main_app.py
+          
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ManuX-Wealth-OS-Windows
+          path: dist/ManuX-Wealth-OS.exe
 
-  # ------------------------------------------------------------------
-  # JOB 2: MACOS
-  # ------------------------------------------------------------------
   build-macos:
     runs-on: macos-latest
-    
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-        
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        brew install create-dmg
-        
-    - name: Build APP (Mac)
-      run: |
-        pyinstaller --windowed --noconsole --name="ManuX_Wealth_OS" --collect-all customtkinter --hidden-import=yfinance --hidden-import=pandas --hidden-import=matplotlib --hidden-import=PIL --hidden-import=reportlab ManuX_Wealth_OS.py
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+          
+      - name: Build macOS executable
+        run: |
+          pyinstaller --onefile --windowed --name "ManuX-Wealth-OS" --add-data "logo.png:." main_app.py
+          
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ManuX-Wealth-OS-macOS
+          path: dist/ManuX-Wealth-OS
 
-    - name: Create DMG
-      run: |
-        mkdir -p dist/dmg
-        mv dist/ManuX_Wealth_OS.app dist/dmg/
-        create-dmg \
-          --volname "ManuX Wealth OS Installer" \
-          --window-pos 200 120 \
-          --window-size 800 400 \
-          --icon-size 100 \
-          --icon "ManuX_Wealth_OS.app" 200 190 \
-          --hide-extension "ManuX_Wealth_OS.app" \
-          --app-drop-link 600 185 \
-          "dist/ManuX_Wealth_OS.dmg" \
-          "dist/dmg/"
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-tk
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+          
+      - name: Build Linux executable
+        run: |
+          pyinstaller --onefile --name "ManuX-Wealth-OS" --add-data "logo.png:." main_app.py
+          
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ManuX-Wealth-OS-Linux
+          path: dist/ManuX-Wealth-OS
 
-    - name: Upload Mac DMG
-      uses: actions/upload-artifact@v4
-      with:
-        name: ManuX_Wealth_OS_Mac
-        path: dist/ManuX_Wealth_OS.dmg
+  release:
+    needs: [build-windows, build-macos, build-linux]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        
+      - name: Display structure
+        run: ls -R
+        
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ManuX-Wealth-OS-Windows/ManuX-Wealth-OS.exe
+            ManuX-Wealth-OS-macOS/ManuX-Wealth-OS
+            ManuX-Wealth-OS-Linux/ManuX-Wealth-OS
+          generate_release_notes: true
