@@ -48,7 +48,7 @@ jobs:
       - name: Install Buildozer
         run: |
           pip install --upgrade pip setuptools wheel
-          pip install buildozer cython==0.29.36
+          pip install buildozer cython
           pip install kivy kivymd requests pillow
       
       - name: Build APK with Buildozer
