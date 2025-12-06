@@ -5,7 +5,7 @@ package.domain = com.manux
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 16.2.0
-requirements = python3,kivy==2.3.0,kivymd==2.0.1.dev0,requests,pillow
+requirements = python3,kivy==2.3.0,https://github.com/kivymd/KivyMD/archive/master.zip,requests,pillow
 
 # Android specific
 android.permissions = INTERNET
